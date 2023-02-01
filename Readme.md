@@ -1,5 +1,5 @@
-# FinGen - The ChatGPT based Penetration Testing Findings Generator
-FinGen is a findings generator to help save penetration testers time and provide more readable findings.
+# FinGen - Penetration Testing Findings Generator
+FinGen is a ChatGPT based findings generator to help save penetration testers time and provide more readable findings.
 
 It generates findings with the following properties:
 - Description
