@@ -1,9 +1,7 @@
-import argparse
 from itertools import cycle
 from shutil import get_terminal_size
 from threading import Thread
 from time import sleep
-from revChatGPT.Official import Chatbot
 
 class Loader:
     def __init__(self, desc="Loading...", end="Done!", timeout=0.1):
@@ -46,33 +44,3 @@ class Loader:
     def __exit__(self, exc_type, exc_value, tb):
         # handle exceptions with those variables ^
         self.stop()
-
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "-t",
-    "--title",
-    required=True,
-    action='append',
-    help="Finding Title",
-)
-parser.add_argument(
-    "--api_key",
-    type=str,
-    required=True,
-    help="OpenAI API key",
-)
-args = parser.parse_args()
-
-chatbot = Chatbot(api_key=args.api_key)
-
-for title in args.title:
-    loader = Loader("Thinking...", "").start()
-    prompt = (
-        "Write me a penetration testing finding about " + title + "." 
-        "It should contain a description and remediation section. "
-        "It should also have a risk rating based on the likelihood and impact of exploitation."
-    )
-    message = chatbot.ask(prompt)
-    loader.stop()
-    print(message["choices"][0]["text"])
-    print("")

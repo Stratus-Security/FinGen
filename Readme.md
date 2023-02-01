@@ -11,24 +11,31 @@ It generates findings with the following properties:
 ## Quick Start
 You just need 2 things to run it:
 - An API key from OpenAI (https://platform.openai.com/account/api-keys)
-- A finding title
+- Any finding title
 
+### Run from pip
+```
+pip3 install FinGen
+python3 -m FinGen --api_key "<api_key>" --title "Auto Complete Not Disabled"
+```
+
+### Run from source
 ```
 git clone https://github.com/Stratus-Security/FinGen
 cd FinGen
 pip3 install revChatGPT
-python3 FindingsGenerator.py --api_key "<api_key>" --title "Auto Complete Not Disabled"
+python3 FinGen.py --api_key "<api_key>" --title "Auto Complete Not Disabled"
 ```
 
 ## Usage
 Generate a single finding
 ```
-python3 FindingsGenerator.py --api_key "<api_key>" --title "Auto Complete Not Disabled" 
+python3 FinGen.py --api_key "<api_key>" --title "Auto Complete Not Disabled" 
 ```
 
 We can also generate multiple findings at once
 ```
-python3 FindingsGenerator.py --api_key "<api_key>" --title "Auto Complete Not Disabled" --title "Blind SQL Injection" --title "Reflected Cross-Site Scripting" 
+python3 FinGen.py --api_key "<api_key>" --title "Auto Complete Not Disabled" --title "Blind SQL Injection" --title "Reflected Cross-Site Scripting" 
 ```
 
 ## Demo
