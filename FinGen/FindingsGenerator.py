@@ -1,12 +1,13 @@
 import argparse
 import os
 from .Loader import Loader
-from revChatGPT.Official import Chatbot
+import os
+import openai
 
 class FinGen:
     @staticmethod
     def get_parser() -> argparse.ArgumentParser:
-        parser = argparse.ArgumentParser(usage="FinGen --api_key \"<OpenAI_Api_Key>\" --title \"<Finding Title>\"", description="FinGen CLI", prog="python -m FinGen")
+        parser = argparse.ArgumentParser(usage="FinGen --api-key \"<OpenAI_Api_Key>\" --title \"<Finding Title>\"", description="FinGen CLI", prog="python -m FinGen")
         parser.add_argument(
             "-t",
             "--title",
@@ -16,27 +17,36 @@ class FinGen:
         )
         parser.add_argument(
             "-k",
-            "--api_key",
+            "--api-key",
             type=str,
             required=True,
             help="OpenAI API key",
         )
+        parser.add_argument(
+            "-c",
+            "--company",
+            type=str,
+            default=None,
+            help="Perspective to write finding from",
+        )
         return parser
 
     @staticmethod
-    def CreateFinding(api_key, titles):
-        # Set base prompt - will only give very short responses otherwise
-        os.environ["CUSTOM_BASE_PROMPT"] = "You are ChatGPT, a large language model trained by OpenAI.\n"
+    def CreateFinding(api_key, titles, company):
+        openai.api_key = api_key
+        systemPrompt = "You are a penetration tester writing a report"
+
+        # Write it from the company perspective
+        if company != None:
+            systemPrompt += " for " + company
 
         # Set up the bot
-        chatbot = Chatbot(api_key=api_key)
-
         for title in titles:
             loader = Loader("Thinking...", "Thinking... Done!").start()
             prompt = (
                 # Preamble
-                "Write me a penetration testing finding titled \"" + title + "\".\n"
-                "It should contain a description, remediation, and overall risk rating.\n"
+                "Write a finding for \"" + title + "\".\n"
+                "It should contain a description, remediation, and overall risk rating. Nothing else.\n"
 
                 # Description Spec
                 "The description section should contain enough detail to understand the finding and the risk posed to the business.\n"
@@ -51,11 +61,16 @@ class FinGen:
                 "The overall risk can be \"Informational\", \"Low\", \"Medium\", \"High\", or \"Critical\".\n"
                 "The impact can be \"Insignificant\", \"Minor\", \"Moderate\", \"Major\", or \"Very High\".\n"
                 "The likelihood can be \"Rare\", \"Unlikely\", \"Possible\", \"Likely\", or \"Almost Certain\".\n"
-
-                # Final thoughts
-                "Nicely format the sections for me."
             )
-            message = chatbot.ask(prompt)
+
+            completion = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content" : systemPrompt},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            message = completion.choices[0].message.content
             loader.stop()
-            print(message["choices"][0]["text"])
+            print(message)
             print("")

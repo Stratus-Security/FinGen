@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
   name = 'FinGen',
   packages = ['FinGen'],
-  version = '0.1.6',
+  version = '0.2',
   license='GPLv3',
   description = 'A penetration testing findings generator using ChatGPT.',
   author = 'Stratus Security',
@@ -10,7 +10,7 @@ setup(
   url = 'https://github.com/Stratus-Security/FinGen',
   keywords = ['ChatGPT', 'Pentesting', 'Penetration Testing', 'Findings Generator'],
   install_requires=[
-    'revChatGPT'
+    'openai'
   ],
   classifiers=[
     'Development Status :: 5 - Production/Stable',
