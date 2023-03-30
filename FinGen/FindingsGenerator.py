@@ -50,6 +50,9 @@ class FinGen:
 
                 # Description Spec
                 "The description section should contain enough detail to understand the finding and the risk posed to the business.\n"
+                
+                # implication spec
+                "The implication should contain a paragraph outlining the implication of not implementing the finding and how it may impact an organisation"
 
                 # Remediation Spec
                 "The remediation should contain a paragraph outlining how to remediate the finding."
