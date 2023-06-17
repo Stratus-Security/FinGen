@@ -48,6 +48,9 @@ class FinGen:
 
                 # Description Spec
                 "The description section should contain enough detail to understand the finding and the risk posed to the business.\n"
+                
+                # implication spec
+                "The implication should contain a paragraph outlining the implication of not implementing the finding and how it may impact an organisation"
 
                 # Remediation Spec
                 "The remediation should contain a paragraph outlining how to remediate the finding."
@@ -81,6 +84,10 @@ class FinGen:
                                     "type": "string",
                                     "description": "How to fix the finding"
                                 },
+                                "implication": {
+                                    "type": "string",
+                                    "description": "The business implication if the finding isn't fixed"
+                                },
                                 "overall_risk": {
                                     "type": "string",
                                     "enum": ["Informational", "Low", "Medium", "High", "Critical"]
@@ -94,7 +101,7 @@ class FinGen:
                                     "enum": ["Rare", "Unlikely", "Possible", "Likely", "Almost Certain"]
                                 }
                             },
-                            "required": ["title", "description", "remediation", "overall_risk", "impact", "likelihood"]
+                            "required": ["title", "description", "remediation", "implication", "overall_risk", "impact", "likelihood"]
                         }
                     }
                 ],
@@ -111,6 +118,9 @@ class FinGen:
 
             print("\n----- Remediation -----")
             print(output["remediation"])
+            
+            print("\n----- Implication -----")
+            print(output["implication"])
 
             print("\n----- Risk Rating -----")
             print(output["overall_risk"])
