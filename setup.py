@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
   name = 'FinGen',
   packages = ['FinGen'],
-  version = '0.2',
+  version = '0.3',
   license='GPLv3',
   description = 'A penetration testing findings generator using ChatGPT.',
   author = 'Stratus Security',

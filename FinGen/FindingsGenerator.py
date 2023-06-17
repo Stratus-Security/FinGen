@@ -1,7 +1,6 @@
 import argparse
-import os
+import json
 from .Loader import Loader
-import os
 import openai
 
 class FinGen:
@@ -34,7 +33,7 @@ class FinGen:
     @staticmethod
     def CreateFinding(api_key, titles, company):
         openai.api_key = api_key
-        systemPrompt = "You are a penetration tester writing a report"
+        systemPrompt = "You are a penetration tester writing report findings"
 
         # Write it from the company perspective
         if company != None:
@@ -46,7 +45,6 @@ class FinGen:
             prompt = (
                 # Preamble
                 "Write a finding for \"" + title + "\".\n"
-                "It should contain a description, remediation, and overall risk rating. Nothing else.\n"
 
                 # Description Spec
                 "The description section should contain enough detail to understand the finding and the risk posed to the business.\n"
@@ -56,24 +54,81 @@ class FinGen:
 
                 # Remediation Spec
                 "The remediation should contain a paragraph outlining how to remediate the finding."
-                "If multiple steps are required, they can be listed too.\n"
 
                 # Risk Rating Spec
-                "The risk rating is based on the likelihood and impact of exploitation following on the OWASP Risk Rating Methodology.\n" 
-                "Risk rating section should be displayed in the format: ```Risk: <insert overall risk>\nImpact: <insert impact>\nLikelihood: <insert likelihood of exploitation>```\n"
-                "The overall risk can be \"Informational\", \"Low\", \"Medium\", \"High\", or \"Critical\".\n"
-                "The impact can be \"Insignificant\", \"Minor\", \"Moderate\", \"Major\", or \"Very High\".\n"
-                "The likelihood can be \"Rare\", \"Unlikely\", \"Possible\", \"Likely\", or \"Almost Certain\".\n"
+                "The risk rating is based on the likelihood and impact of exploitation following on the OWASP Risk Rating Methodology." 
             )
 
-            completion = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo-0613", # or gpt-4-0613
                 messages=[
                     {"role": "system", "content" : systemPrompt},
                     {"role": "user", "content": prompt}
-                ]
+                ],
+                functions=[
+                    {
+                        "name": "generate_finding",
+                        "description": "Compiles raw finding sections into a report",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string",
+                                    "description": "Title for the finding"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Description of the finding"
+                                },
+                                "remediation": {
+                                    "type": "string",
+                                    "description": "How to fix the finding"
+                                },
+                                "implication": {
+                                    "type": "string",
+                                    "description": "The business implication if the finding isn't fixed"
+                                },
+                                "overall_risk": {
+                                    "type": "string",
+                                    "enum": ["Informational", "Low", "Medium", "High", "Critical"]
+                                },
+                                "impact": {
+                                    "type": "string",
+                                    "enum": ["Insignificant", "Minor", "Moderate", "Major", "Very High"]
+                                },
+                                "likelihood": {
+                                    "type": "string",
+                                    "enum": ["Rare", "Unlikely", "Possible", "Likely", "Almost Certain"]
+                                }
+                            },
+                            "required": ["title", "description", "remediation", "implication", "overall_risk", "impact", "likelihood"]
+                        }
+                    }
+                ],
+                function_call={"name": "generate_finding"}
             )
-            message = completion.choices[0].message.content
+            output = json.loads(response.choices[0]["message"]["function_call"]["arguments"])
             loader.stop()
-            print(message)
+
+            print("----- Title -----")
+            print(output["title"])
+
+            print("\n----- Description -----")
+            print(output["description"])
+
+            print("\n----- Remediation -----")
+            print(output["remediation"])
+            
+            print("\n----- Implication -----")
+            print(output["implication"])
+
+            print("\n----- Risk Rating -----")
+            print(output["overall_risk"])
+
+            print("\n----- Impact -----")
+            print(output["impact"])
+
+            print("\n----- Likelihood -----")
+            print(output["likelihood"])
+
             print("")
