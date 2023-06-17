@@ -4,9 +4,11 @@ FinGen is a ChatGPT based findings generator to help save penetration testers ti
 It generates findings with the following properties:
 - Description
 - Remediation
-- Risk Rating (With Likelihood + Impact)
+- Implication
+- Risk Rating (With likelihood + impact)
 - _Sometimes_ extra helpful info like a risk rating justification
-> **_NOTE:_**  It generally gives accurate findings but make sure to verify and add context in a real report.
+> **_NOTE:_**  It generally gives accurate findings but make sure to verify and add context in a real report.  
+> Swap the model (see code) if you have GPT-4 for better findings.
 
 ## Quick Start
 You just need 2 things to run it:
