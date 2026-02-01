@@ -1,5 +1,5 @@
 # FinGen - Penetration Testing Findings Generator
-FinGen is a ChatGPT based findings generator to help save penetration testers time and provide more readable findings.
+FinGen is a ChatGPT based findings generator to help save penetration testers time and provide more readable findings. Note that this tool should not be used to write entire reports without oversight and is not used internally by Stratus but is intended to only be a proof of concept.
 
 It generates findings with the following properties:
 - Description
